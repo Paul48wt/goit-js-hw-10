@@ -31,7 +31,6 @@ function tooManyMessage(value) {
 }
 
 function createListOfContriesMarkup(amount, data) {
-  console.log(amount, data);
   let markup = '';
   if (amount >= 2 && amount < 10) {
     markup = data
