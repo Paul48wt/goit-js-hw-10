@@ -17,7 +17,7 @@ export function fetchCountries(name) {
       tooManyMessage(data.length);
       populateListOfCountries(createListOfContriesMarkup(data.length, data));
     })
-    .catch(error => {
+    .catch(() => {
       Notiflix.Notify.failure('Oops, there is no country with that name');
     });
 }
