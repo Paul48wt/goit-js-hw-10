@@ -1,18 +1,25 @@
 import Notiflix from 'notiflix';
+import { refs } from './refs';
 const BASE_URL = 'https://restcountries.com/v2/';
-const listOfCountries = document.querySelector('.country-list');
+
 export function fetchCountries(name) {
   fetch(
     `${BASE_URL}name/${name}?fields=name,capital,population,flags,languages`
   )
-    .then(r => {
-      return r.json();
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(response.status);
+      }
+      return response.json();
     })
     .then(data => {
+      console.log(data);
       tooManyMessage(data.length);
       populateListOfCountries(createListOfContriesMarkup(data.length, data));
     })
-    .catch(error => console.log(error));
+    .catch(error => {
+      Notiflix.Notify.failure('Oops, there is no country with that name');
+    });
 }
 
 function tooManyMessage(value) {
@@ -24,18 +31,33 @@ function tooManyMessage(value) {
 }
 
 function createListOfContriesMarkup(value, data) {
-  if (value > 2 && value < 10) {
-    return data
+  let markup = '';
+  if (value >= 2 && value < 10) {
+    markup = data
       .map(
         item =>
-          `<li><img src="${item.flags.svg}" alt="" width=20> ${item.name}</li>`
+          `<li class="country__list"><img src="${item.flags.svg}" alt="" width=20> ${item.name}</li>`
       )
       .join('');
+    refs.countryInfo.innerHTML = '';
+    refs.listOfCountries.innerHTML = markup;
+  } else if (value === 1) {
+    markup = data
+      .map(
+        item =>
+          `<ul><li ><img class="flag" src="${
+            item.flags.svg
+          }" alt="" width=30 ><span class="country__name">${
+            item.name
+          }</span> </li>
+          <li><b>Capital:</b> ${item.capital}</li>
+          <li><b>Population:</b> ${item.population}</li>
+          <li><b>Languages:</b> ${item.languages
+            .map(item => item.name)
+            .join(', ')} </li></ul>`
+      )
+      .join('');
+    refs.listOfCountries.innerHTML = '';
+    refs.countryInfo.innerHTML = markup;
   }
-}
-// `<li><img src="${item.flags.svg}" alt=""> ${item.name}</li>`
-
-function populateListOfCountries(markup) {
-  console.log(markup);
-  listOfCountries.innerHTML = markup;
 }
