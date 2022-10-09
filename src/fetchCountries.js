@@ -10,14 +10,14 @@ export function fetchCountries(name) {
       if (!response.ok) {
         throw new Error(response.status);
       }
+
       return response.json();
     })
     .then(data => {
-      console.log(data);
       tooManyMessage(data.length);
-      populateListOfCountries(createListOfContriesMarkup(data.length, data));
+      createListOfContriesMarkup(data.length, data);
     })
-    .catch(() => {
+    .catch(error => {
       Notiflix.Notify.failure('Oops, there is no country with that name');
     });
 }
@@ -30,9 +30,10 @@ function tooManyMessage(value) {
   }
 }
 
-function createListOfContriesMarkup(value, data) {
+function createListOfContriesMarkup(amount, data) {
+  console.log(amount, data);
   let markup = '';
-  if (value >= 2 && value < 10) {
+  if (amount >= 2 && amount < 10) {
     markup = data
       .map(
         item =>
@@ -41,7 +42,7 @@ function createListOfContriesMarkup(value, data) {
       .join('');
     refs.countryInfo.innerHTML = '';
     refs.listOfCountries.innerHTML = markup;
-  } else if (value === 1) {
+  } else if (amount === 1) {
     markup = data
       .map(
         item =>
