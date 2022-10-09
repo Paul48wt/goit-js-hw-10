@@ -27,6 +27,7 @@ function tooManyMessage(value) {
     Notiflix.Notify.info(
       'Too many matches found. Please enter a more specific name.'
     );
+    refs.listOfCountries.innerHTML = '';
   }
 }
 
