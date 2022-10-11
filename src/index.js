@@ -14,15 +14,21 @@ function onInput(event) {
     refs.listOfCountries.innerHTML = '';
     return;
   }
-  fetchCountries(event.target.value.trim())
-    .then(data => {
-      tooManyMessage(data.length);
-      createListOfContriesMarkup(data.length, data);
-    })
-    .catch(error => {
-      Notiflix.Notify.failure('Oops, there is no country with that name');
+  
+  fetchCountries(event.target.value.trim()).then(data => {
+    tooManyMessage(data.length);
+    createListOfContriesMarkup(data.length, data);
+
+    if (data.status === 404) {
+      throw new Error();
+    }
+  }).
+    catch(error => {
+      Notiflix.Notify.failure('Oops, there is no country with that name')
     });
-}
+   
+  
+
 
 function tooManyMessage(value) {
   if (value > 10) {
